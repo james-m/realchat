@@ -1,0 +1,10 @@
+SSION STATEMENT
+Yesterday’s blog app is today’s chat server.
+
+In the past, a blog example was enough to show of a web framework, but as ajax has taken over the web front end, more sophisticated backends have emerged, implementing techniques like highly concurrent, non blocking socket I/O to keep up. Thus it seems like if you really want to show off what a framework can do, an ajaxified chat server is where its at. 
+
+Many of these examples are just the right level to give someone a taste of what that framework provides. Yet as I’ve consumed these examples I’m almost always left wanting more details of a how they would be deployed in a real world, highly scalable, highly available way?
+
+This project is my attempt to do that. We’re going to create an ajaxified web chat service with a backend that is distributed so we can scale linearly and provide higher fault tolerance (basically, all the cool things distributed systems give you). We’re also gonna pull together no one piece of technology, but a few, as you would need to in the real world. 
+
+The goal is to eventually deploy it on AWS across a few running instances to prove the architecture’s viability.
