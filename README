@@ -1,4 +1,4 @@
-SSION STATEMENT
+MISSION STATEMENT
 Yesterday’s blog app is today’s chat server.
 
 In the past, a blog example was enough to show of a web framework, but as ajax has taken over the web front end, more sophisticated backends have emerged, implementing techniques like highly concurrent, non blocking socket I/O to keep up. Thus it seems like if you really want to show off what a framework can do, an ajaxified chat server is where its at. 
@@ -25,6 +25,8 @@ b) smaller, bite-sized pieces of code are easier to digest, and the more you dig
 * bottle (http://bottlepy.org/docs/dev/) - for http request routing. Again a
 * simple framework where were only gonna use a piece of it to do what we need. 
 * mysql (http://www.mysql.com/) - Yep, the old work horse is still the best
-* when it comes to persisting bytes to disk. 
+  when it comes to persisting bytes to disk. 
+* config (http://www.red-dove.com/config-doc/) for hierarchical app
+  configuration
 
 That’s about all I can think of for now. I *might* do something like mustache (http://mustache.github.com/) if I decide I need templating, but this project is mainly focused on a scalable backend so we’ll see. 
