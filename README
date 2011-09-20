@@ -16,14 +16,14 @@ a) because they’re so loosely coupled, you have more choose for any given comp
 b) smaller, bite-sized pieces of code are easier to digest, and the more you digest of what a framework is doing under the covers, the better able you’ll be to diagnose problems. 
 
 * gevent for networking / parallelism (http://www.gevent.org/) - I <3
-* greenlets. I cut my teeth with them really haven’t found anything better for
-* optimizing for I/O parallelism (which is what all this non-blocking sockets
-* are about right?)
+  greenlets. I cut my teeth with them really haven’t found anything better for
+  optimizing for I/O parallelism (which is what all this non-blocking sockets
+  are about right?)
 * YARO for http request object (http://lukearno.com/projects/yaro/) - A nice
-* lightweight object for turning a wsgi http request into something consumable
-* in python. 
+  lightweight object for turning a wsgi http request into something consumable
+  in python. 
 * bottle (http://bottlepy.org/docs/dev/) - for http request routing. Again a
-* simple framework where were only gonna use a piece of it to do what we need. 
+  simple framework where were only gonna use a piece of it to do what we need. 
 * mysql (http://www.mysql.com/) - Yep, the old work horse is still the best
   when it comes to persisting bytes to disk. 
 * config (http://www.red-dove.com/config-doc/) for hierarchical app
