@@ -18,7 +18,14 @@ if ENV_NAME not in os.environ:
     raise ConfigException(
         'Unknown environment (%s environ variable not set)' % ENV_NAME)
 CONF_FILENAME = os.environ[ENV_NAME]
-THE_CONF = Config(CONF_FILENAME) 
-def get(name, default = None):
-    return THE_CONF.get(name, default)
+THE_CONF = None
+def load(_reload=False):
+    global THE_CONF
+    if _reload or THE_CONF is None:
+        THE_CONF = Config(CONF_FILENAME) 
+load()
 
+def get(name, default = None):
+    if THE_CONF is None:
+        raise ConfigException('configuration not loaded')
+    return THE_CONF.get(name, default)
