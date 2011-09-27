@@ -29,9 +29,15 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-'''common/backend.py
+'''common/serverlock.py
 
-Useful code shared by backend components.
+Common util module for server process locking. We use sockets because
+only a single process can bind to one port at a time (lock them) and when 
+the process goes away so does the lock. 
+
+The idea is to have a pool of ports on any given host that we try in turn
+when doing process initialization. If we can't bind to a given port
+we move on to the next in our service list. If we run out then we stop.
 '''
 import socket
 
