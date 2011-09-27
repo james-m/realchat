@@ -38,6 +38,9 @@ the process goes away so does the lock.
 The idea is to have a pool of ports on any given host that we try in turn
 when doing process initialization. If we can't bind to a given port
 we move on to the next in our service list. If we run out then we stop.
+
+NOTE that these files expect a list of dicts with the keys 'host' and
+'lockport' which are the hostname:port combination to bind/lock too.
 '''
 import socket
 
@@ -59,7 +62,6 @@ def _bindlock(srv):
 
 def lock_server(confs):
     for c in servers_by_hostname(confs):
-        c = dict(c)
         try:
             s = _bindlock(c)
             c['lock'] = s
