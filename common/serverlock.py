@@ -54,6 +54,7 @@ def servers_by_hostname(confs):
     return result
 
 def _bindlock(srv):
+    srv = dict(srv)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((srv.get('host', ''), srv['lockport']))

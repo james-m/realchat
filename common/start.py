@@ -108,7 +108,7 @@ def setup_logdir(logdir):
     #
     os.chmod(logdir, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
 
-def setup_logging(logname, logdir, args):
+def setup_logging(logname, logdir, args, monkey = False):
     """Given an existing logdir (setup with setup_logdir above), sets up the
     logging streams for this process. 
     """
@@ -128,6 +128,10 @@ def setup_logging(logname, logdir, args):
             logfile, 'a', LOG_SIZE_MAX, LOG_COUNT_MAX)
         file_hndlr.setFormatter(log_fmt)
         log.addHandler(file_hndlr)
+    if monkey:
+        logging.root = log
+        logging.Logger.root = logging.root 
+        logging.manaer = logging.Manager(logging.Logger.root)
     return log
 
 ##########
@@ -184,7 +188,7 @@ def daemonize(pidfile=None):
 # MAIN
 ########
 
-def main(realmain, args, confs, logname = 'logger'):
+def main(realmain, args, confs, logname = 'logger', **kw):
     """main start method. 
     
     The function will setup the process's logging, and fork if sepcified,
@@ -207,7 +211,8 @@ def main(realmain, args, confs, logname = 'logger'):
     #
     logdir = here.get('logdir', 'logs')
     setup_logdir(logdir)
-    log = setup_logging(logname, logdir, args) 
+    log = setup_logging(
+        logname, logdir, args, monkey=kw.get('monkey_log', False)) 
 
     # fork
     #
@@ -222,7 +227,7 @@ def main(realmain, args, confs, logname = 'logger'):
 
     # execute realmain
     #
-    realmain(log, logdir,  args)
+    realmain(log, logdir,  args, here, **kw)
     return 0
 
 if __name__ == '__main__':
@@ -240,19 +245,22 @@ if __name__ == '__main__':
     args = parser.parse_args()
     # our test daemon
     #
-    def test_go(log, logdir, args, **kwargs):
-        log.info('starting test gostartgo')
+    def test_go(log, logdir, args, here, **kwargs):
+        logging.info('starting test gostartgo')
         while GO:
             time.sleep(1)
-            log.info('beep')
+            logging.info('beep here %s' % here)
 
-        log.info('finished test gostartgo')
+        logging.info('finished test gostartgo')
     GO = True
     def shutdown_handler(signum, frame):
         global GO
         GO = False
     signal.signal(signal.SIGUSR2, shutdown_handler)
 
-    v = main(test_go, args, confs, logname = 'start_test')
+    v = main(
+        test_go, args, confs, 
+        logname = 'start_test',
+        monkey_log = True)
     sys.exit(v)
 
