@@ -95,6 +95,41 @@ LOG_SIZE_MAX  = 16*1024*1024
 LOG_COUNT_MAX = 50
 LOG_FRMT      = '[%(name)s|%(asctime)s|%(levelname)s] %(message)s'
 
+class LogStreamWrap(object):
+    
+    def __init__(self, log, *args, **kwargs):
+        self._log = log
+        self._prefix = ''
+
+    def write(self, s):
+        if s[-1] == '\n':
+            s = s[:-1]
+        self._output(self._prefix + s)
+
+    def _output(self, s):
+        raise NotImplemented() 
+
+    def flush(self):
+        pass
+
+class StdOutWrap(LogStreamWrap):
+
+    def __init__(self, *args, **kwargs):
+        super(StdOutWrap, self).__init__(*args, **kwargs)
+        self._prefix = '>> '
+
+    def _output(self, s):
+        self._log.info(s)
+
+class StdErrWrap(LogStreamWrap):
+
+    def __init__(self, *args, **kwargs):
+        super(StdErrWrap, self).__init__(*args, **kwargs)
+        self._perfix = '!> '
+
+    def _output(self, s):
+        self._log.error(s)
+
 def setup_logdir(logdir):
     """setup the logdir. os.makedirs() it if it doesn't exist. 
     creates with full writes for all users to read and write to it. 
@@ -119,15 +154,18 @@ def setup_logging(logname, logdir, args, monkey = False):
         log.setLevel(logging.DEBUG)
     # always have a stream handler to stdout
     #
-    stream_hndlr = logging.StreamHandler(sys.stdout)
-    stream_hndlr.setFormatter(log_fmt)
-    log.addHandler(stream_hndlr)
-    if args.logfile is not None:
+    if args.logfile is None:
+        stream_hndlr = logging.StreamHandler(sys.stdout)
+        stream_hndlr.setFormatter(log_fmt)
+        log.addHandler(stream_hndlr)
+
+    else:
         logfile = os.path.join(logdir, args.logfile)
         file_hndlr = logging.handlers.RotatingFileHandler(
             logfile, 'a', LOG_SIZE_MAX, LOG_COUNT_MAX)
         file_hndlr.setFormatter(log_fmt)
         log.addHandler(file_hndlr)
+
     if monkey:
         logging.root = log
         logging.Logger.root = logging.root 
@@ -178,12 +216,6 @@ def daemonize(pidfile=None):
     #  c) make the process dumpable
     #
 
-    # close standard file descriptors
-    #
-    os.close(sys.stdin.fileno())
-    os.close(sys.stdout.fileno())
-    os.close(sys.stderr.fileno())
-
 ########
 # MAIN
 ########
@@ -225,42 +257,20 @@ def main(realmain, args, confs, logname = 'logger', **kw):
         except PidFileWriteException, e:
             return 1
 
+        # close standard file descriptors
+        #
+        os.close(sys.stdin.fileno())
+        os.close(sys.stdout.fileno())
+        os.close(sys.stderr.fileno())
+        # place our log stream wrapper in place of the std file desciptors
+        #
+        sys.stdout = StdOutWrap(log)
+        sys.stderr = StdErrWrap(log)
+
+
     # execute realmain
     #
     realmain(log, logdir,  args, here, **kw)
     return 0
 
-if __name__ == '__main__':
-    # a test environment to make start.py go. We set up a fake configuration,
-    # specifying things needed to lock this process node and create log files.
-    # Next we define a simple run function that just sleeps for a second then
-    # prints to the log. Finally, we setup a signal handler on USR2 so we can
-    # shutdown the "daemon" gracefully.
-    #
-    confs = [
-        {'host' : 'localhost', 'lockport' : 8080, 'logdir' : 'log0',},
-        {'host' : 'localhost', 'lockport' : 8090, 'logdir' : 'log1',},
-        ]
-    parser = generic_parser('testing start.py')
-    args = parser.parse_args()
-    # our test daemon
-    #
-    def test_go(log, logdir, args, here, **kwargs):
-        logging.info('starting test gostartgo')
-        while GO:
-            time.sleep(1)
-            logging.info('beep here %s' % here)
-
-        logging.info('finished test gostartgo')
-    GO = True
-    def shutdown_handler(signum, frame):
-        global GO
-        GO = False
-    signal.signal(signal.SIGUSR2, shutdown_handler)
-
-    v = main(
-        test_go, args, confs, 
-        logname = 'start_test',
-        monkey_log = True)
-    sys.exit(v)
 
