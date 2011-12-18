@@ -39,11 +39,10 @@ The server side code for a given chat service instance.
 import sys
 import os
 import signal
-import wsgiref.simple_server
 
+import wsgiref.simple_server
 import conf
 import common.start
-
 import chatroom
 
 def serve_wsgiref(log, logdir, args, here, **kwargs):
@@ -52,13 +51,13 @@ def serve_wsgiref(log, logdir, args, here, **kwargs):
     locked by common.serverlock.lock_server().
 
     The here has the host and port name, which we use to construct our
-    wsgiref httpd to expose out bottle wsgi app. 
+    wsgiref httpd to expose our bottle wsgi app. 
     '''
     host = here['host']
     httpport = here['httpport']
     log.info('chat service starting. host: %s port: %s' % (
         host, httpport))
-    app = chatroom.BOTTLE
+    app = chatroom.APP()
     httpd = wsgiref.simple_server.make_server(host, httpport, app)
     try:
         httpd.serve_forever()

@@ -42,14 +42,12 @@ Uses the lightweight wsgi framework bottle.
 import bottle
 import logging
 
-BOTTLE = bottle.Bottle()
 bottle.debug(True)
+APP = bottle.default_app
 
-@BOTTLE.route('/hello')
+@bottle.route('/hello')
 def hello():
     msg = 'ohno hello world!'
     logging.info(msg)
     bottle.request.content_type = 'text/plain'
     return msg + '\n'
-
-
