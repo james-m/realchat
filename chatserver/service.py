@@ -57,7 +57,7 @@ def serve_wsgiref(log, logdir, args, here, **kwargs):
     httpport = here['httpport']
     log.info('chat service starting. host: %s port: %s' % (
         host, httpport))
-    app = chatroom.APP()
+    app = chatroom.APP
     httpd = wsgiref.simple_server.make_server(host, httpport, app)
     try:
         httpd.serve_forever()

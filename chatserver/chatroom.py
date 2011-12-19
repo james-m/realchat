@@ -43,11 +43,11 @@ import bottle
 import logging
 
 bottle.debug(True)
-APP = bottle.default_app
+APP = bottle.default_app()
 
 @bottle.route('/hello')
 def hello():
     msg = 'ohno hello world!'
     logging.info(msg)
-    bottle.request.content_type = 'text/plain'
+    bottle.response.content_type = 'text/plain'
     return msg + '\n'
