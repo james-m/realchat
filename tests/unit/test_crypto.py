@@ -29,27 +29,16 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-"""common/crypto.py
+import unittest
 
-Utility module for encrypting and decrypting strings. 
+from common import crypto
 
-Useful for encoding UUIDs for placement in browser cookies.
+class CryptoTestCase(unittest.TestCase):
 
-The underlying mechanism for key control is the keyczar crypto toolkit. Provides
-an easy way to deploy sets of keys used for cryptographic functions. For more info
-see http://www.keyczar.org/
+    def test_basic(self):
+        message = 'Every Good Boy Does Fine Roy Gee Biv'
+        assert message == crypto.decrypt(crypto.encrypt(message))
 
-A keyczar keyset is only ever read once, at module import time. This is to avoid
-undue disk read operations when decrypting ciphertext. 
-"""
-import os
-import conf
-import keyczar.keyczar
-CRYPTER = keyczar.keyczar.Crypter.Read(
-    os.path.abspath(conf.get('keyczar_keyset_path')))
+if __name__ == '__main__':
+    unittest.main()
 
-def encrypt(message):
-    return CRYPTER.Encrypt(message)
-
-def decrypt(ciphertext):
-    return CRYPTER.Decrypt(ciphertext)
