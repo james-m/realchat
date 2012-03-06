@@ -19,9 +19,6 @@ b) smaller, bite-sized pieces of code are easier to digest, and the more you dig
   greenlets. I cut my teeth with them really haven’t found anything better for
   optimizing for I/O parallelism (which is what all this non-blocking sockets
   are about right?)
-* YARO for http request object (http://lukearno.com/projects/yaro/) - A nice
-  lightweight object for turning a wsgi http request into something consumable
-  in python. 
 * bottle (http://bottlepy.org/docs/dev/) - for http request routing. Again a
   simple framework where were only gonna use a piece of it to do what we need. 
 * mysql (http://www.mysql.com/) - Yep, the old work horse is still the best
@@ -29,4 +26,13 @@ b) smaller, bite-sized pieces of code are easier to digest, and the more you dig
 * config (http://www.red-dove.com/config-doc/) for hierarchical app
   configuration
 
-That’s about all I can think of for now. I *might* do something like mustache (http://mustache.github.com/) if I decide I need templating, but this project is mainly focused on a scalable backend so we’ll see. 
+Of interest:
+* YAML for configs (http://yaml.org/)--a friend pointed me to this as a 
+  language for configs, might be nice replacement for the config module.
+* mustache templates (http://mustache.github.com/)--a non-logic based
+  templating engine that's implemented in a bunch of different languages. This
+  means you can do stuff like have a unified template scheme for rendering on
+  the server OR in the browser. And because you can't escape to a given
+  language to do all kinds of crazy logic you're shielded from bloated
+  template execution.
+
