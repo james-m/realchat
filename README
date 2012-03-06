@@ -35,4 +35,7 @@ Of interest:
   the server OR in the browser. And because you can't escape to a given
   language to do all kinds of crazy logic you're shielded from bloated
   template execution.
+* bootstrap (http://twitter.github.com/bootstrap/)--twitter's web-interface
+  library... the alternative to a simple templating engine, seems at least
+  somewhat interesting, tho the common pitfalls of using any platform applies.
 
